@@ -23,6 +23,6 @@ Este repositorio contiene la evolución del sistema de atención automatizada pa
 * **n8n** (Orquestación del agente y subagentes)
 * **Supabase** (Base de datos PostgreSQL)
 * **OpenAI** (Modelo de lenguaje)
-* 
+  
 ## 🙏 Agradecimientos
 Un agradecimiento especial a mi profesora **Ingrid Estupiñan** y a todo el equipo de **DAXUS LATAM** por su guía, enseñanza y apoyo en mi formación para desarrollar soluciones reales con Inteligencia Artificial y automatización.

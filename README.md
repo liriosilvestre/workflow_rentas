@@ -9,6 +9,7 @@ Sistema multiagente automatizado construido con **n8n** y **Supabase** para la *
 * **Base de datos en tiempo real:** Conectado a Supabase para consultar disponibilidad y características.
 
 ## 🧠 Arquitectura del Sistema Multiagente
+![Arquitectura del Agente Lirio Rentas](Workflow_agente_rentas.png)
 
 Este repositorio contiene la evolución del sistema de atención automatizada para **Lirio Rentas**:
 

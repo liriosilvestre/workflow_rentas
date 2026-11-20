@@ -1,0 +1,458 @@
+{
+  "name": "My workflow _subagentescorregido",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2eac546-d583-4251-b749-a1abf8dc421a",
+              "name": "humano",
+              "value": "false",
+              "type": "string"
+            },
+            {
+              "id": "1e9e9e05-6951-4ebb-b076-75dc7c42c2d5",
+              "name": "=mensaje_respuesta",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -336,
+        -1424
+      ],
+      "id": "d035f543-cb51-4cf0-a947-a6861559a023",
+      "name": "Edit Fields_formatear bot"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "e2eac546-d583-4251-b749-a1abf8dc421a",
+              "name": "humano",
+              "value": "true",
+              "type": "string"
+            },
+            {
+              "id": "1e9e9e05-6951-4ebb-b076-75dc7c42c2d5",
+              "name": "=mensaje_respuesta",
+              "value": "Un momento por favor. Estoy transfiriendo tu conversación con un asesor humano para darte una atención personalizada.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -656,
+        -1504
+      ],
+      "id": "894e57b1-0f3d-4fc8-840f-c607eee1a8ee",
+      "name": "Edit Fields_formatear humano"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "8027e7be-b0f2-4753-a476-0610aff61b1b",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "TRANSFERIR HUMANO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        -912,
+        -1360
+      ],
+      "id": "b6b626cd-fe99-4162-9412-f1ad075bb0af",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "Eres el agente lirio. Tu único objetivo es dar una bienvenida muy corta. Si el cliente está interesado en rentar una casa, un departamento o un edificio. no des precios, ni detalles todavía, solo identifica el tipo de inmueble y conduce el cliente al subagente del tipo de propiedad casa, departamento o edificio.  No inventes. Si el cliente pide hablar con un humano de inmediato, responde únicamente con la palabra clave: TRANSFERIR HUMANO."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1248,
+        -1344
+      ],
+      "id": "8df34ef3-265e-44ad-b007-8a6158863ef1",
+      "name": "AI Agent_lirioRentas"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -1376,
+        -976
+      ],
+      "id": "1280513e-7cbe-4e1f-969b-543208a6fcbe",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1600,
+        -1104
+      ],
+      "id": "0cbeab3a-29d0-4d1a-bc1a-4fd1d8c1d9fa",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.5,
+      "position": [
+        -1536,
+        -1344
+      ],
+      "id": "552740f3-a394-44f2-924b-3e065eafe9ca",
+      "name": "When chat message received",
+      "webhookId": "d056c867-b60a-4f01-a6f3-401bd221159f"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "projectRef": "ajaraloyzhzlwgjnohrj",
+        "tableId": "Propiedades",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "tipo",
+              "condition": "eq",
+              "keyValue": "edificio"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -480,
+        -960
+      ],
+      "id": "1466860f-dddd-42a5-b40a-6517b4dd2798",
+      "name": "Get many rows in Supabase_edificio",
+      "credentials": {
+        "supabaseOAuth2Api": {
+          "id": "YDCza75O2RXzA7Es",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "projectRef": "ajaraloyzhzlwgjnohrj",
+        "tableId": "Propiedades",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "tipo",
+              "condition": "eq",
+              "keyValue": "departamento"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -640,
+        -944
+      ],
+      "id": "7b6c815c-b590-409c-94f1-e8de6d15346e",
+      "name": "Get many rows in Supabase_departamento",
+      "credentials": {
+        "supabaseOAuth2Api": {
+          "id": "YDCza75O2RXzA7Es",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "getAll",
+        "projectRef": "ajaraloyzhzlwgjnohrj",
+        "tableId": "Propiedades",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "tipo",
+              "condition": "eq",
+              "keyValue": "casa"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -928
+      ],
+      "id": "9d612e00-90b4-4294-8355-db0e62713636",
+      "name": "Get many rows in Supabase_casa",
+      "credentials": {
+        "supabaseOAuth2Api": {
+          "id": "YDCza75O2RXzA7Es",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "consultar_edificios",
+        "text": "={{ $json.system_prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -560,
+        -1168
+      ],
+      "id": "fd6137e9-98d1-4644-8049-9a4344528cd7",
+      "name": "AI Agent_edificios"
+    },
+    {
+      "parameters": {
+        "toolDescription": "consultar_departamentos",
+        "text": "={{ $json.system_prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -896,
+        -1152
+      ],
+      "id": "63030f7c-efd2-4ca6-b714-7867c376f151",
+      "name": "AI Agent_departamentos"
+    },
+    {
+      "parameters": {
+        "toolDescription": "consultar_casas",
+        "text": "={{ $json.system_prompt }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agentTool",
+      "typeVersion": 3,
+      "position": [
+        -1184,
+        -1120
+      ],
+      "id": "3c4feffd-f359-4ea4-83d9-d9011459d17b",
+      "name": "AI Agent_casa"
+    }
+  ],
+  "connections": {
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields_formatear humano",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields_formatear bot",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent_lirioRentas": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent_edificios",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent_departamentos",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI Agent_casa",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows in Supabase_edificio": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_edificios",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows in Supabase_departamento": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_departamentos",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows in Supabase_casa": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_casa",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent_edificios": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent_departamentos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent_casa": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent_lirioRentas",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}

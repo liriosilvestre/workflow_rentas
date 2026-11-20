@@ -1,0 +1,158 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "[REGLA DE ORO DE TOKENS: Sé extremadamente directo. No saludes ni uses cortesías.]\nEres el agente inteligente de Lirio Rentas. Tu única función es identificar o registrar el tipo de propiedad. Debes usar estrictamente uno de estos tres valores en minúsculas: \"casa\", \"edificio\" o \"departamento\". Si el usuario no lo especifica, pregunta directamente: \"¿Es casa, edificio o departamento?\" en menos de 10 palabras.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        16,
+        -80
+      ],
+      "id": "ad66ce75-690e-4bc8-95f2-adb3c25f45ff",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {
+          "maxTokens": -1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -40,
+        152
+      ],
+      "id": "b7c53a73-bfcd-484f-a4b7-3658a16e2ed8",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        88,
+        152
+      ],
+      "id": "02d6d904-29a9-4b86-8a46-eccfc9f23c67",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "operation": "update",
+        "tableId": "=propiedades",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "=agente_lirio_rentas",
+              "condition": "=id"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        -264,
+        248
+      ],
+      "id": "365ad4ca-2441-4877-8fd2-9e033f1dd8ee",
+      "name": "Update a row in Supabase",
+      "credentials": {
+        "supabaseOAuth2Api": {
+          "id": "YDCza75O2RXzA7Es",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2"
+      },
+      "type": "n8n-nodes-base.supabaseTool",
+      "typeVersion": 1,
+      "position": [
+        216,
+        152
+      ],
+      "id": "8b775691-612c-478e-9e88-f42f4e71cb88",
+      "name": "Create a row in Supabase",
+      "credentials": {
+        "supabaseOAuth2Api": {
+          "id": "YDCza75O2RXzA7Es",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update a row in Supabase": {
+      "ai_tool": [
+        []
+      ]
+    },
+    "Create a row in Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
